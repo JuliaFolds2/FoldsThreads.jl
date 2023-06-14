@@ -1,4 +1,4 @@
-# FoldsThreads: Extra threaded executors for JuliaFolds/*.jl
+# FoldsThreads: Extra threaded executors for JuliaFolds2/*.jl
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliafolds.github.io/FoldsThreads.jl/dev)
 [![GitHub Actions](https://github.com/JuliaFolds/FoldsThreads.jl/workflows/Run%20tests/badge.svg)](https://github.com/JuliaFolds/FoldsThreads.jl/actions?query=workflow%3ARun+tests)
