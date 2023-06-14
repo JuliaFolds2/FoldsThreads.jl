@@ -34,7 +34,7 @@ jobs:
             threads: '2,1'
       fail-fast: false
 
-    name: Test Julia ${{ matrix.julia-version }} -t'${{ matrix.threads }}'
+    name: Test Julia ${{ matrix.julia-version }} -t${{ matrix.threads }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup julia
