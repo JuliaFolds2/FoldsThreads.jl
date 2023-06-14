@@ -40,7 +40,7 @@ struct WorkerPool
 end
 
 function WorkerPool()
-    ntasks = @static VERSION >= v"1.9.0-0" ? Threads.maxthreadid() ? Threads.nthreads()
+    ntasks = @static VERSION >= v"1.9.0-0" ? Threads.maxthreadid() : Threads.nthreads()
     tasks = [Task[] for _ in 1:ntasks]
     queues = [WorkQueue() for _ in 1:ntasks]
     occupied = zeros(Bool, ntasks)
