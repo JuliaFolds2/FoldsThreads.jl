@@ -21,11 +21,16 @@ const RefChannelAny = typeof(Ref(request_channel()))
 const PRIMARY_TASK = RefChannelAny()
 
 function init_primary_task()
+    expected_thread = if VERSION >= v"1.9.0-0"
+        Threads.threadpoolsize(:interactive) + 1 # interactive threads come first
+    else
+        1
+    end
     @debug "`init_primary_task`: Initializing `PRIMARY_TASK` channel..."
     PRIMARY_TASK[] = request = request_channel()
     ok = Ref(false)
     _foreach_thread() do
-        if Threads.threadid() == 1
+        if Threads.threadid() == expected_thread
             @async request_handler(request)
             ok[] = true
         end
@@ -55,7 +60,8 @@ const EACH_THREAD = Vector{Union{Channel{Any},Nothing}}(undef, 0)
 
 function init_each_thread()
     @debug "`init_each_thread`: Initializing `EACH_THREAD` channels..."
-    resize!(EACH_THREAD, Threads.nthreads())
+    n = VERSION >= v"1.9.0-0" ? Threads.maxthreadid() : Threads.nthreads()
+    resize!(EACH_THREAD, n)
     EACH_THREAD .= Ref(nothing)
     ok = _foreach_thread() do
         i = Threads.threadid()

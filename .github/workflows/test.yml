@@ -13,12 +13,28 @@ jobs:
     strategy:
       matrix:
         julia-version:
+          - '1.9'
+          - '1.8'
           - '1.7'
           - '1.6'
           - '1.5'
           - 'nightly'
+        threads:
+          - '1'
+          - '2'
+          - '2,1'
+        exclude:
+          - julia-version: 1.5
+            threads: '2,1'
+          - julia-version: 1.6
+            threads: '2,1'
+          - julia-version: 1.7
+            threads: '2,1'
+          - julia-version: 1.8
+            threads: '2,1'
       fail-fast: false
-    name: Test Julia ${{ matrix.julia-version }}
+
+    name: Test Julia ${{ matrix.julia-version }} -t${{ matrix.threads }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup julia
@@ -27,9 +43,10 @@ jobs:
           version: ${{ matrix.julia-version }}
       # Use `JULIA_PKG_SERVER` mitigation implemented in julia-buildpkg:
       - uses: julia-actions/julia-buildpkg@v1
-      - run: julia -e 'using Pkg; pkg"add Run@0.1"'
-      - run: julia -e 'using Run; Run.prepare("test/environments/main")'
-      - run: julia -e 'using Run; Run.test(project="test/environments/main")'
+      - uses: julia-actions/julia-runtest@v1
+        env:
+          JULIA_NUM_THREADS: ${{ matrix.threads }}
+
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v1
         with:
